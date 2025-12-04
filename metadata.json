@@ -1,0 +1,5 @@
+{
+  "name": "WordSmith AI Converter",
+  "description": "A smart tool that converts text with Markdown and LaTeX formulas (like from GPT/LLMs) into Microsoft Word-compatible formatting using Gemini.",
+  "requestFramePermissions": []
+}
