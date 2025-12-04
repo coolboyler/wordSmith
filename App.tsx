@@ -23,9 +23,9 @@ const App: React.FC = () => {
       setOutputHtml(result.wordReadyHtml);
       setStatus(ConversionStatus.SUCCESS);
     } catch (error) {
-      console.error(error);
+      console.error('Conversion error:', error);
       setStatus(ConversionStatus.ERROR);
-      setErrorMsg("Failed to convert text. Please check your API Key and try again.");
+      setErrorMsg(`Failed to convert text: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 

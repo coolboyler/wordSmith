@@ -47,36 +47,56 @@ Output:
 `;
 
 export const convertToWordFormat = async (inputText: string): Promise<ConvertResponse> => {
+  // Debug: Log API key status (masked for security)
+  const apiKeyPrefix = DEEPSEEK_API_KEY ? `${DEEPSEEK_API_KEY.substring(0, 4)}...${DEEPSEEK_API_KEY.substring(DEEPSEEK_API_KEY.length - 4)}` : 'missing';
+  console.log(`DeepSeek API Key status: ${apiKeyPrefix}`);
+
   if (!DEEPSEEK_API_KEY) {
     throw new Error("Missing DeepSeek API Key. Please set DEEPSEEK_API_KEY environment variable.");
   }
 
   try {
+    const requestBody = {
+      model: 'deepseek-chat',
+      messages: [
+        {
+          role: 'system',
+          content: SYSTEM_INSTRUCTION
+        },
+        {
+          role: 'user',
+          content: inputText
+        }
+      ],
+      temperature: 0.1,
+      stream: false
+    };
+
+    console.log('Sending request to DeepSeek API:', {
+      url: DEEPSEEK_API_URL,
+      model: requestBody.model,
+      messageLength: inputText.length
+    });
+
     const response = await fetch(DEEPSEEK_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          {
-            role: 'system',
-            content: SYSTEM_INSTRUCTION
-          },
-          {
-            role: 'user',
-            content: inputText
-          }
-        ],
-        temperature: 0.1,
-        stream: false
-      })
+      body: JSON.stringify(requestBody)
     });
 
+    console.log('DeepSeek API response status:', response.status, response.statusText);
+
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      let errorData = {};
+      try {
+        errorData = await response.json();
+        console.log('DeepSeek API error details:', errorData);
+      } catch (e) {
+        console.log('Failed to parse error response:', e);
+      }
       throw new Error(`DeepSeek API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
     }
 
