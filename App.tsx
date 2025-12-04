@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { InputPanel } from './components/InputPanel';
 import { OutputPanel } from './components/OutputPanel';
 import { Header } from './components/Header';
-import { convertToWordFormat } from './services/geminiService';
+import { convertToWordFormat } from './services/deepseekService';
 import { ConversionStatus } from './types';
 import { MagicIcon } from './icons';
 
